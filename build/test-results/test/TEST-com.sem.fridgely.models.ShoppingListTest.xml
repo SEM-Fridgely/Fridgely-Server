@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="com.sem.fridgely.models.ShoppingListTest" tests="1" skipped="0" failures="0" errors="0" timestamp="2019-10-26T18:50:33" hostname="qiandans-MacBook-Pro.local" time="0.01">
+<testsuite name="com.sem.fridgely.models.ShoppingListTest" tests="1" skipped="0" failures="0" errors="0" timestamp="2019-10-26T19:12:36" hostname="qiandans-MacBook-Pro.local" time="0.012">
   <properties/>
-  <testcase name="testGetInJASON" classname="com.sem.fridgely.models.ShoppingListTest" time="0.01"/>
+  <testcase name="testGetInJASON" classname="com.sem.fridgely.models.ShoppingListTest" time="0.012"/>
   <system-out><![CDATA[]]></system-out>
   <system-err><![CDATA[]]></system-err>
 </testsuite>
