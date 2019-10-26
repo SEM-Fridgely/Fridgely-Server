@@ -2,6 +2,7 @@ package com.sem.fridgely.http.interfaces;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
+import com.sem.fridgely.http.ServiceResponse;
 import com.sem.fridgely.manager.ShoppingListManager;
 import com.sem.fridgely.models.ShoppingList;
 import org.codehaus.jettison.json.JSONArray;
@@ -31,7 +32,7 @@ public class ShoppingListInterface {
             obj.put("version", "0.0.1");
             obj.put("date", String.join(" ", LocalDateTime.now().toString().split("T")));
             obj.put("info", "Hello from Shopping List Interface : )");
-            return Response.ok(new JSONObject().put("data", obj), MediaType.APPLICATION_JSON).build();
+            return ServiceResponse.response200(obj);
         } catch (Exception e) {
             return Response.status(404).entity("Service is not available now, please try later").build();
         }
@@ -44,7 +45,7 @@ public class ShoppingListInterface {
         try {
             ShoppingList shoppingList = ShoppingListManager.getInstance().getById(shoppinglistid);
             if (shoppingList != null) {
-                return Response.ok(new JSONObject().put("data", shoppingList.getInJson()), MediaType.APPLICATION_JSON_TYPE).build();
+                return ServiceResponse.response200(shoppingList.getInJson());
             } else {
                 return Response.noContent().build();
             }
@@ -58,8 +59,9 @@ public class ShoppingListInterface {
     @Produces({MediaType.APPLICATION_JSON})
     public Response shoppinglistAllGetByUser(@PathParam("userid") String id) {
         try {
-            List<JSONObject> ls = ShoppingListManager.getInstance().getAllByUserId(id).stream().map(ShoppingList::getInJson).collect(toList());
-            return Response.ok(new JSONObject().put("data", new JSONArray(ls)), MediaType.APPLICATION_JSON).build();
+            List<JSONObject> ls = ShoppingListManager.getInstance().getAllByUserId(id).stream()
+                    .map(ShoppingList::getInJson).collect(toList());
+            return ServiceResponse.response200(new JSONArray(ls));
         } catch (Exception e) {
             return null;
         }
@@ -86,12 +88,10 @@ public class ShoppingListInterface {
             JSONObject req = new JSONObject(ow.writeValueAsString(request));
             String id = req.getString("id");
             ShoppingList shoppingList = ShoppingListManager.getInstance().getById(id);
-            if (shoppingList != null) {
-                return Response.ok(new JSONObject().put("data", shoppingList.getInJson()), MediaType.APPLICATION_JSON).build();
-            } else {
+            if (shoppingList == null) {
                 shoppingList = ShoppingListManager.getInstance().create(id, req.getString("name"), userid, req.getJSONArray("items"));
-                return Response.ok(shoppingList.getInJson(), MediaType.APPLICATION_JSON).build();
             }
+            return ServiceResponse.response200(shoppingList.getInJson());
         } catch (Exception e) {
             return Response.status(400).entity(e.toString()).build();
         }
@@ -110,7 +110,7 @@ public class ShoppingListInterface {
                 return Response.noContent().entity("Not found").build();
             }
             ShoppingList updated = ShoppingListManager.getInstance().updateItems(id, req.getString("name"), req.getJSONArray("items"));
-            return Response.ok(new JSONObject().put("data", updated.getInJson()), MediaType.APPLICATION_JSON).build();
+            return ServiceResponse.response200(updated.getInJson());
         } catch (Exception e) {
 
         }
