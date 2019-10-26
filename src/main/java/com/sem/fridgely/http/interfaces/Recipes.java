@@ -34,10 +34,10 @@ public class Recipes extends HttpInterface {
         String specificRecipeUrl = "https://api.edamam.com/search";
 
         if(query!=null) {
-            ApiSettings recipeApiSetting = new ApiSettings(query, specificRecipeUrl);
+           ApiSettings recipeApiSetting = new ApiSettings(query, specificRecipeUrl);
            RecipeAPI recipeAPI = new RecipeAPI(recipeApiSetting);
-                 String results =    recipeAPI.callAPI();
-            return results;
+           String results =    recipeAPI.callAPI();
+           return results;
         }
         return "Hello world without query";
     }

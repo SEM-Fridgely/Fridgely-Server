@@ -1,6 +1,7 @@
 package com.sem.fridgely.manager;
 
 public class ApiSettings {
+    public static String API_ENDPOINT = "https://api.edamam.com/search";
     String query;// Required
     String specificRecipeUrl;// Required
     int indexFrom;

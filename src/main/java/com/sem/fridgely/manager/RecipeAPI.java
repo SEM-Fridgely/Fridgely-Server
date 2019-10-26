@@ -24,9 +24,8 @@ public class RecipeAPI {
 
     public String callAPI() {
         String query = this.settings.getQuery();
-        String endpoint = "https://api.edamam.com/search";
         Client client = Client.create();
-        WebResource webResource = client.resource(endpoint);
+        WebResource webResource = client.resource(ApiSettings.API_ENDPOINT);
         ClientResponse response = webResource.queryParam("app_id","3ef87764")
                 .queryParam("app_key","f6329aeb0ce6a806b529977877a9b5a4%20")
                 .queryParam("q",query)
@@ -40,11 +39,9 @@ public class RecipeAPI {
 
         InputStream inputStream = response.getEntityInputStream();
 
-        StringBuilder textBuilder = new StringBuilder();
-
         Reader reader  = new BufferedReader(new InputStreamReader(inputStream,Charset.forName(StandardCharsets.UTF_8.name())));
         try{
-        String test=  org.apache.commons.io.IOUtils.toString(reader);
+            String test=  org.apache.commons.io.IOUtils.toString(reader);
             return test;
         }catch(Exception e){
             System.out.println(e.getMessage());
