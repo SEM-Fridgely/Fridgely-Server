@@ -13,7 +13,7 @@ public class ShoppingList {
     public ShoppingList(Document doc){
         this.id = doc.getString("id");
         this.name = doc.getString("name");
-        this.userid = doc.getString("name");
+        this.userid = doc.getString("userid");
     }
     public String getId(){
         return id;

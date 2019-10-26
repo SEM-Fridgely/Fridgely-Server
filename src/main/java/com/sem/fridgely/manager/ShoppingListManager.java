@@ -5,6 +5,8 @@ import org.bson.Document;
 import org.bson.conversions.Bson;
 
 import javax.json.JsonObject;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import static com.mongodb.client.model.Filters.eq;
@@ -19,8 +21,8 @@ public class ShoppingListManager extends Manager{
         return _self;
     }
 
-    public String create(String id, String name){
-        this.shoppingListCollection.insertOne(new Document("id", id).append("name", name));
+    public String create(String id, String name, String userId){
+        this.shoppingListCollection.insertOne(new Document("id", id).append("name", name).append("userid",userId));
         return id;
     }
 
@@ -39,6 +41,23 @@ public class ShoppingListManager extends Manager{
             return new ShoppingList(doc);
         else
             return null;
+    }
+    public ShoppingList getByUserId(String userid, String id){
+        Document doc = this.shoppingListCollection.find(new Document("userid",userid).append("id",id)).first();
+        if(doc != null)
+            return new ShoppingList(doc);
+        else
+            return null;
+    }
+    public List<ShoppingList> getAllByUserId(String userid){
+        List<ShoppingList> sList = new ArrayList<ShoppingList>();
+        Iterable<Document> docs =  this.shoppingListCollection.find(new Document("userid",userid));
+        if(docs != null){
+            docs.forEach(doc->sList.add(new ShoppingList(doc)));
+            return sList;
+        }
+        else{
+            return null;}
     }
     public void addItems(){}
     public void updateItems(ShoppingList shoppinglist){
