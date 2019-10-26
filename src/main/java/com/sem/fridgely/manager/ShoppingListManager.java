@@ -12,6 +12,7 @@ import static com.mongodb.client.model.Filters.eq;
 
 public class ShoppingListManager extends Manager {
     public static ShoppingListManager _self;
+    public static String FIELD_ID = "id", FIELD_NAME = "name", FIELD_USERID = "userid", FIELD_ITEMS = "items";
 
     public static ShoppingListManager getInstance() {
         if (_self == null) {
@@ -21,22 +22,24 @@ public class ShoppingListManager extends Manager {
     }
 
     public ShoppingList create(String id, String name, String userId, JSONArray items) {
-        this.shoppingListCollection.insertOne(new Document("id", id).append("name", name).append("userid", userId).append("items", items.toString().getBytes()));
+        this.shoppingListCollection.insertOne(new Document(FIELD_ID, id).append(FIELD_NAME, name)
+                .append(FIELD_USERID, userId)
+                .append(FIELD_ITEMS, items.toString().getBytes()));
         return getById(id);
     }
 
     public void delete(String id) {
-        this.shoppingListCollection.deleteOne(new Document("id", id));
+        this.shoppingListCollection.deleteOne(new Document(FIELD_ID, id));
     }
 
     public void update(ShoppingList shoppinglist) {
-        Bson filter = eq("id", shoppinglist.getId());
-        Bson content = new Document("$set", new Document("name", shoppinglist.getName()));
+        Bson filter = eq(FIELD_ID, shoppinglist.getId());
+        Bson content = new Document("$set", new Document(FIELD_NAME, shoppinglist.getName()));
         Document doc = this.shoppingListCollection.findOneAndUpdate(filter, content);
     }
 
     public ShoppingList getById(String id) {
-        Document doc = this.shoppingListCollection.find(new Document("id", id)).first();
+        Document doc = this.shoppingListCollection.find(new Document(FIELD_ID, id)).first();
         if (doc != null)
             return new ShoppingList(doc);
         else
@@ -44,7 +47,7 @@ public class ShoppingListManager extends Manager {
     }
 
     public ShoppingList getByUserId(String userid, String id) {
-        Document doc = this.shoppingListCollection.find(new Document("userid", userid).append("id", id)).first();
+        Document doc = this.shoppingListCollection.find(new Document(FIELD_USERID, userid).append(FIELD_ID, id)).first();
         if (doc != null)
             return new ShoppingList(doc);
         else
@@ -53,7 +56,7 @@ public class ShoppingListManager extends Manager {
 
     public List<ShoppingList> getAllByUserId(String userid) {
         List<ShoppingList> sList = new ArrayList<ShoppingList>();
-        Iterable<Document> docs = this.shoppingListCollection.find(new Document("userid", userid));
+        Iterable<Document> docs = this.shoppingListCollection.find(new Document(FIELD_USERID, userid));
         if (docs != null) {
             docs.forEach(doc -> sList.add(new ShoppingList(doc)));
             return sList;
@@ -64,8 +67,8 @@ public class ShoppingListManager extends Manager {
 
     public ShoppingList updateItems(String id, String name, JSONArray items) {
         List<ShoppingList> sl = new ArrayList<ShoppingList>();
-        Bson filter = eq("id", id);
-        Bson content = new Document("$set", new Document("items", items.toString().getBytes()).append("name", name));
+        Bson filter = eq(FIELD_ID, id);
+        Bson content = new Document("$set", new Document(FIELD_ITEMS, items.toString().getBytes()).append(FIELD_NAME, name));
         Document doc = this.shoppingListCollection.findOneAndUpdate(filter, content);
         return new ShoppingList(doc);
     }
