@@ -1,23 +1,28 @@
 package com.sem.fridgely.models;
 
 import com.sem.fridgely.manager.ShoppingListManager;
-import jdk.jfr.Timestamp;
 import org.bson.Document;
 import org.bson.types.Binary;
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONObject;
 
+import java.util.Date;
+
 public class ShoppingList {
 
     private String id, name, userid;
-    private Timestamp createdOn, updatedOn, deletedOn;
+    private Date createdOn, updatedOn, deletedOn;
     private Binary bItems;
 
     public ShoppingList(Document doc) {
         this.id = doc.getString(ShoppingListManager.FIELD_ID);
         this.name = doc.getString(ShoppingListManager.FIELD_NAME);
         this.userid = doc.getString(ShoppingListManager.FIELD_USERID);
-        this.bItems = doc.get(ShoppingListManager.FIELD_ITEMS, org.bson.types.Binary.class);
+        try {
+            this.bItems = doc.get(ShoppingListManager.FIELD_ITEMS, org.bson.types.Binary.class);
+        } catch (Exception e) {
+        }
+
     }
 
     public String getId() {

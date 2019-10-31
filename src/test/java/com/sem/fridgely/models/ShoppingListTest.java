@@ -8,7 +8,6 @@ import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 import org.junit.Test;
 
-import static junit.framework.TestCase.assertTrue;
 import static org.junit.Assert.assertEquals;
 
 public class ShoppingListTest {
@@ -33,6 +32,7 @@ public class ShoppingListTest {
         ShoppingList undertest = new ShoppingList(doc);
         JSONObject actual = undertest.getInJson();
 
+        // Assert
         assertEquals(expected.toString(),actual.toString());
 
     }

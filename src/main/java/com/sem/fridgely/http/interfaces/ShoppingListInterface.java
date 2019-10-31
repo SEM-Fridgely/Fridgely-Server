@@ -7,6 +7,7 @@ import com.sem.fridgely.manager.ShoppingListManager;
 import com.sem.fridgely.models.ShoppingList;
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONObject;
+import org.glassfish.jersey.server.ResourceConfig;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -17,7 +18,7 @@ import java.util.List;
 import static java.util.stream.Collectors.toList;
 
 @Path("/shoppingList")
-public class ShoppingListInterface {
+public class ShoppingListInterface extends ResourceConfig {
     protected ObjectWriter ow;
 
     public ShoppingListInterface() {
@@ -29,10 +30,11 @@ public class ShoppingListInterface {
     public Response shoppingListRoot() {
         JSONObject obj = new JSONObject();
         try {
-            obj.put("version", "0.0.1");
-            obj.put("date", String.join(" ", LocalDateTime.now().toString().split("T")));
-            obj.put("info", "Hello from Shopping List Interface : )");
-            return ServiceResponse.response200(obj);
+//            obj.put("version", "0.0.1");
+//            obj.put("date", String.join(" ", LocalDateTime.now().toString().split("T")));
+//            obj.put("info", "Hello from Shopping List Interface : )");
+//            return ServiceResponse.response200(obj);
+            return Response.ok("hello this is shopping list page").build();
         } catch (Exception e) {
             return Response.status(404).entity("Service is not available now, please try later").build();
         }
@@ -41,7 +43,7 @@ public class ShoppingListInterface {
     @GET
     @Path("/{id}")
     @Produces({MediaType.APPLICATION_JSON})
-    public Response shoppinglistGetByUser(@PathParam("id") String shoppinglistid) {
+    public Response shoppinglistGetById(@PathParam("id") String shoppinglistid) {
         try {
             ShoppingList shoppingList = ShoppingListManager.getInstance().getById(shoppinglistid);
             if (shoppingList != null) {
