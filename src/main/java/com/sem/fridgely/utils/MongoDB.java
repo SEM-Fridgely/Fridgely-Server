@@ -12,7 +12,7 @@ import java.util.logging.Logger;
 
 public class MongoDB {
     private static MongoDB _self;
-    public static String COLLECTION_NAME_SHOPPING_LIST = "shoppinglist";
+    public static String COLLECTION_NAME_SHOPPING_LIST = "shoppinglist", COLLECTION_NAME_RATING="ratings";
     private static MongoDatabase db;
 
     private MongoDB(){

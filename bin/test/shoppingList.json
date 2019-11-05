@@ -1,0 +1,21 @@
+{
+  "data": {
+    "id": "sl003",
+    "name": "Dan3's shopping list",
+    "userid": "u234",
+    "items": [
+      {
+        "unit": "g",
+        "qty": 10,
+        "name": "ITEM TEST 3",
+        "id": "I123"
+      },
+      {
+        "unit": "g",
+        "qty": 10,
+        "name": "ITEM TEST 3",
+        "id": "I123"
+      }
+    ]
+  }
+}

@@ -6,10 +6,11 @@ import com.sem.fridgely.utils.MongoDB;
 import org.bson.Document;
 
 public class Manager {
-    protected MongoCollection<Document> shoppingListCollection;
+    protected MongoCollection<Document> shoppingListCollection, ratingCollection;
 
     public Manager(){
         this.shoppingListCollection = MongoDB.getInstance().getCollection(MongoDB.COLLECTION_NAME_SHOPPING_LIST);
+        this.ratingCollection = MongoDB.getInstance().getCollection(MongoDB.COLLECTION_NAME_RATING);
     }
 //    protected AppException handleException(String message, Exception e){
 //        AppLogger.error(message, e);
