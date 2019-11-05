@@ -41,5 +41,9 @@
         GET http://localhost:8080/ratings/id123
          -> 200
              {
-                 "data": 3.25
+                 "data": {
+                     "id": "id123",
+                     "count": 9,
+                     "average": 3.6666666666666665
+                 }
              }
