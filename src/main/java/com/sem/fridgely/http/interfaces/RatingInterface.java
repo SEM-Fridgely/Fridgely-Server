@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectWriter;
 import com.sem.fridgely.http.ServiceResponse;
 import com.sem.fridgely.manager.RatingManager;
 import com.sem.fridgely.models.Rating;
+import com.sem.fridgely.models.UserRating;
 import org.codehaus.jettison.json.JSONObject;
 import org.glassfish.jersey.server.ResourceConfig;
 
@@ -38,9 +39,9 @@ public class RatingInterface extends ResourceConfig {
     @Produces({MediaType.APPLICATION_JSON})
     public Response ratingGetById(@PathParam("id") String id) {
         try {
-            Double rating = RatingManager.getInstance().getByRatingId(id);
+            Rating rating = RatingManager.getInstance().getByRatingId(id);
             if (rating != null) {
-                return ServiceResponse.response200(rating);
+                return ServiceResponse.response200(rating.getInJson());
             } else {
                 return Response.noContent().build();
             }
@@ -70,11 +71,11 @@ public class RatingInterface extends ResourceConfig {
         try {
             JSONObject req = new JSONObject(ow.writeValueAsString(request));
             String id = req.getString("id");
-            Rating rating = RatingManager.getInstance().getByUserAndRatingId(userid, id);
-            if (rating == null) {
-                rating = RatingManager.getInstance().create(id, userid, req.getDouble("rating"));
+            UserRating userRating = RatingManager.getInstance().getByUserAndRatingId(userid, id);
+            if (userRating == null) {
+                userRating = RatingManager.getInstance().create(id, userid, req.getDouble("rating"));
             }
-            return ServiceResponse.response200(rating.getInJson());
+            return ServiceResponse.response200(userRating.getInJson());
         } catch (Exception e) {
             return Response.status(400).entity(e.toString()).build();
         }
@@ -89,14 +90,14 @@ public class RatingInterface extends ResourceConfig {
             JSONObject req = new JSONObject(ow.writeValueAsString(request));
             String id = req.getString("id");
             Double value = req.getDouble("rating");
-            Rating rating = RatingManager.getInstance().getByUserAndRatingId(userid, id);
-            if (rating == null) {
+            UserRating userRating = RatingManager.getInstance().getByUserAndRatingId(userid, id);
+            if (userRating == null) {
                 return ServiceResponse.response200("Invalid id");
             } else {
-                rating.setRating(value);
-                RatingManager.getInstance().updateRating(rating);
+                userRating.setRating(value);
+                RatingManager.getInstance().updateRating(userRating);
             }
-            return ServiceResponse.response200(rating.getInJson());
+            return ServiceResponse.response200(userRating.getInJson());
         } catch (Exception e) {
             return Response.status(400).entity(e.toString()).build();
         }

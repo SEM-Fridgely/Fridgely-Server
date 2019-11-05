@@ -1,9 +1,11 @@
 package com.sem.fridgely.manager;
 
 import com.sem.fridgely.models.Rating;
+import com.sem.fridgely.models.UserRating;
 import org.bson.Document;
 import org.bson.conversions.Bson;
 
+import java.util.DoubleSummaryStatistics;
 import java.util.stream.StreamSupport;
 
 import static com.mongodb.client.model.Filters.and;
@@ -20,34 +22,31 @@ public class RatingManager extends Manager {
         return _self;
     }
 
-    public Rating create(String id, String userid, Double rating) {
+    public UserRating create(String id, String userid, Double rating) {
         this.ratingCollection.insertOne(new Document("id", id).append("userid", userid).append("rating", rating));
         return getByUserAndRatingId(userid, id);
     }
 
-    public Double getByRatingId(String id) {
+    public Rating getByRatingId(String id) {
         Iterable<Document> docs = this.ratingCollection.find(new Document(FIELD_ID, id));
-
-        Double average = StreamSupport.stream(docs.spliterator(), true)
-                .mapToDouble(doc -> doc.getDouble(FIELD_RATING)).average().orElse(0);
-
-
-        return average;
+        DoubleSummaryStatistics summaryStatistics = StreamSupport.stream(docs.spliterator(), true)
+                .mapToDouble(doc -> doc.getDouble(FIELD_RATING)).summaryStatistics();
+        return new Rating(id, summaryStatistics);
     }
 
-    public Rating getByUserAndRatingId(String userid, String id) {
+    public UserRating getByUserAndRatingId(String userid, String id) {
         Document doc = this.ratingCollection.find(new Document(FIELD_ID, id).append(FIELD_USERID, userid)).first();
         if (doc != null)
-            return new Rating(doc);
+            return new UserRating(doc);
         else
             return null;
     }
 
-    public Rating updateRating(Rating rating) {
-        Bson filter = and(eq(FIELD_ID, rating.getId()), eq(FIELD_USERID, rating.getUserid()));
-        Bson content = new Document("$set", new Document(FIELD_RATING, rating.getRating()));
+    public UserRating updateRating(UserRating userRating) {
+        Bson filter = and(eq(FIELD_ID, userRating.getId()), eq(FIELD_USERID, userRating.getUserid()));
+        Bson content = new Document("$set", new Document(FIELD_RATING, userRating.getRating()));
         Document doc = this.ratingCollection.findOneAndUpdate(filter, content);
-        return new Rating(doc);
+        return new UserRating(doc);
     }
 
     public void deleteRating(String id, String userid) {

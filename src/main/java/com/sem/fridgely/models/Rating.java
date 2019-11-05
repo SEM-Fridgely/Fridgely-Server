@@ -2,47 +2,22 @@ package com.sem.fridgely.models;
 
 
 import com.sem.fridgely.manager.RatingManager;
-import org.bson.Document;
 import org.codehaus.jettison.json.JSONObject;
 
+import java.util.DoubleSummaryStatistics;
+
 public class Rating {
-    private String id, userid;
-    private Double rating;
+    private String id;
+    private Double aveRating;
+    private Long count;
 
-    public Rating(Document doc) {
-        this.id = doc.getString("id");
-        this.userid = doc.getString("userid");
-        this.rating = doc.getDouble("rating");
+    public Rating(String id, DoubleSummaryStatistics summaryStatistics) {
+        this.id = id;
+        this.aveRating = summaryStatistics.getAverage();
+        this.count = summaryStatistics.getCount();
     }
 
-    public String getId() {
-        return this.id;
-    }
-
-    public String getUserid() {
-        return this.userid;
-    }
-
-    public Double getRating() {
-        return this.rating;
-    }
-
-    public void setRating(Double rating) {
-        this.rating = rating;
-    }
-
-    public JSONObject getInJson() {
-        try {
-            JSONObject js = new JSONObject().put(RatingManager.FIELD_ID, getId())
-                    .put(RatingManager.FIELD_USERID, getUserid())
-                    .put(RatingManager.FIELD_RATING, getRating());
-            return js;
-        } catch (Exception e) {
-            return null;
-        }
-    }
-
-    public static JSONObject castRatingValueToNumber(Double rating){
+    public static JSONObject castRatingValueToNumber(Double rating) {
         try {
             JSONObject js = new JSONObject().put("value", rating.floatValue());
             return js;
@@ -50,4 +25,28 @@ public class Rating {
             return null;
         }
     }
+
+    public String getId() {
+        return id;
+    }
+
+    public Float getAveRating() {
+        return aveRating.floatValue();
+    }
+
+    public Integer getCount() {
+        return count.intValue();
+    }
+
+    public JSONObject getInJson() {
+        try {
+            JSONObject js = new JSONObject().put(RatingManager.FIELD_ID, getId())
+                    .put("count", getCount())
+                    .put("average", getAveRating());
+            return js;
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
 }
