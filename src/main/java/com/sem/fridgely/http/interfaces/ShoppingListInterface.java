@@ -1,28 +1,23 @@
 package com.sem.fridgely.http.interfaces;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.ObjectWriter;
 import com.sem.fridgely.http.ServiceResponse;
 import com.sem.fridgely.manager.ShoppingListManager;
 import com.sem.fridgely.models.ShoppingList;
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONObject;
-import org.glassfish.jersey.server.ResourceConfig;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import java.time.LocalDateTime;
 import java.util.List;
 
 import static java.util.stream.Collectors.toList;
 
 @Path("/shoppingList")
-public class ShoppingListInterface extends ResourceConfig {
-    protected ObjectWriter ow;
+public class ShoppingListInterface extends HttpInterface {
 
     public ShoppingListInterface() {
-        ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
+
     }
 
     @GET
@@ -30,10 +25,6 @@ public class ShoppingListInterface extends ResourceConfig {
     public Response shoppingListRoot() {
         JSONObject obj = new JSONObject();
         try {
-//            obj.put("version", "0.0.1");
-//            obj.put("date", String.join(" ", LocalDateTime.now().toString().split("T")));
-//            obj.put("info", "Hello from Shopping List Interface : )");
-//            return ServiceResponse.response200(obj);
             return Response.ok("hello this is shopping list page").build();
         } catch (Exception e) {
             return Response.status(404).entity("Service is not available now, please try later").build();
@@ -88,16 +79,11 @@ public class ShoppingListInterface extends ResourceConfig {
     public Response shoppinglistCreate(Object request, @PathParam("userid") String userid) {
         try {
             JSONObject req = new JSONObject(ow.writeValueAsString(request));
-            String id = req.getString("id");
-            ShoppingList shoppingList = ShoppingListManager.getInstance().getById(id);
-            if (shoppingList == null) {
-                shoppingList = ShoppingListManager.getInstance().create(id, req.getString("name"), userid, req.getJSONArray("items"));
-            }
+            ShoppingList shoppingList = ShoppingListManager.getInstance().create(req.getString("name"), userid, req.getJSONArray("items"));
             return ServiceResponse.response200(shoppingList.getInJson());
         } catch (Exception e) {
             return Response.status(400).entity(e.toString()).build();
         }
-
     }
 
     @PUT

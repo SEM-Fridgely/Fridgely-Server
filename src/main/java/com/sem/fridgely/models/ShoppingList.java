@@ -22,7 +22,6 @@ public class ShoppingList {
             this.bItems = doc.get(ShoppingListManager.FIELD_ITEMS, org.bson.types.Binary.class);
         } catch (Exception e) {
         }
-
     }
 
     public String getId() {

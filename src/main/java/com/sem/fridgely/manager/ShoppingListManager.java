@@ -6,6 +6,8 @@ import org.bson.conversions.Bson;
 import org.codehaus.jettison.json.JSONArray;
 
 import java.util.ArrayList;
+import java.util.Base64;
+import java.util.Date;
 import java.util.List;
 
 import static com.mongodb.client.model.Filters.eq;
@@ -21,7 +23,8 @@ public class ShoppingListManager extends Manager {
         return _self;
     }
 
-    public ShoppingList create(String id, String name, String userId, JSONArray items) {
+    public ShoppingList create(String name, String userId, JSONArray items) {
+        String id = Base64.getEncoder().encodeToString((userId + new Date().toString()).getBytes());
         this.shoppingListCollection.insertOne(new Document(FIELD_ID, id).append(FIELD_NAME, name)
                 .append(FIELD_USERID, userId)
                 .append(FIELD_ITEMS, items.toString().getBytes()));
@@ -69,8 +72,8 @@ public class ShoppingListManager extends Manager {
         List<ShoppingList> sl = new ArrayList<ShoppingList>();
         Bson filter = eq(FIELD_ID, id);
         Bson content = new Document("$set", new Document(FIELD_ITEMS, items.toString().getBytes()).append(FIELD_NAME, name));
-        Document doc = this.shoppingListCollection.findOneAndUpdate(filter, content);
-        return new ShoppingList(doc);
+        this.shoppingListCollection.findOneAndUpdate(filter, content);
+        return getById(id);
     }
 
 }
