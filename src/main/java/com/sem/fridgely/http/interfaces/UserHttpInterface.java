@@ -13,7 +13,6 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import java.util.ArrayList;
 
 @Path("/users")
 public class UserHttpInterface extends HttpInterface {
@@ -48,10 +47,10 @@ public class UserHttpInterface extends HttpInterface {
     @Produces({MediaType.APPLICATION_JSON})
     public Response getSingleUser(@Context HttpHeaders headers, @PathParam("userId") String userId) {
 
-        ArrayList<User> users = new ArrayList<User>();
+        User user = UserManager.getInstance().getUserById(userId);
 
-        if (users != null)
-            return ServiceResponse.response200(users.add(UserManager.getInstance().getUserById(userId)));
+        if (user != null)
+            return ServiceResponse.response200(user.getInJSON());
         else
             return Response.status(404).entity("User not found").build();
     }

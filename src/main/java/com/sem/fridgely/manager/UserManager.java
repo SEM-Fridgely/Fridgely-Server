@@ -14,7 +14,7 @@ import static com.mongodb.client.model.Filters.eq;
 public class UserManager extends Manager {
 
     public static UserManager _self;
-    public static String FIELD_ID = "_id", FIELD_USER_NAME = "username", FIELD_PASSWORD = "password", FIELD_EMAIL = "email";
+    public static String FIELD_ID = "id", FIELD_USER_NAME = "username", FIELD_PASSWORD = "password", FIELD_EMAIL = "email";
 
     public UserManager() {
     }
