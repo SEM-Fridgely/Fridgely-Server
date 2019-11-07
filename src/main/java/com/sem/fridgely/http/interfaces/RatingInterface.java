@@ -67,7 +67,6 @@ public class RatingInterface extends ResourceConfig {
     @Consumes({MediaType.APPLICATION_JSON})
     @Produces({MediaType.APPLICATION_JSON})
     public Response ratingCreate(Object request, @PathParam("userid") String userid) {
-
         try {
             JSONObject req = new JSONObject(ow.writeValueAsString(request));
             String id = req.getString("id");

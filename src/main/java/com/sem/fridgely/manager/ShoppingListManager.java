@@ -3,6 +3,7 @@ package com.sem.fridgely.manager;
 import com.sem.fridgely.models.ShoppingList;
 import org.bson.Document;
 import org.bson.conversions.Bson;
+import org.bson.types.ObjectId;
 import org.codehaus.jettison.json.JSONArray;
 
 import java.util.ArrayList;
@@ -24,7 +25,7 @@ public class ShoppingListManager extends Manager {
     }
 
     public ShoppingList create(String name, String userId, JSONArray items) {
-        String id = Base64.getEncoder().encodeToString((userId + new Date().toString()).getBytes());
+        String id = new ObjectId().toString();
         this.shoppingListCollection.insertOne(new Document(FIELD_ID, id).append(FIELD_NAME, name)
                 .append(FIELD_USERID, userId)
                 .append(FIELD_ITEMS, items.toString().getBytes()));

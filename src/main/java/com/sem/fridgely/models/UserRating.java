@@ -41,6 +41,4 @@ public class UserRating {
             return null;
         }
     }
-
-
 }

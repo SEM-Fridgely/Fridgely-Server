@@ -1,33 +1,25 @@
 package com.sem.fridgely.manager;
 
+import org.codehaus.jettison.json.JSONException;
+import org.codehaus.jettison.json.JSONObject;
+
 public class ApiSettings {
-    public static String API_ENDPOINT = "https://api.edamam.com/search";
-    String query;// Required
-    String specificRecipeUrl;// Required
-    int indexFrom;
-    int indexTo;
-    int maxIngredient;
-    String[] dietTags;
-    String[] healthTags;
-    String[] cuisineType;
-    String[] mealType;
-    String[] dishType;
-    int calorieFrom;
-    int calorieTo;
-    int prepTimeFrom;
-    int prepTimeTo;
-    String[] exclude;
+    public static final String API_ENDPOINT = "https://api.edamam.com/search";
+    String query = null; // Required
+    Integer indexFrom = null, indexTo = null, maxIngredient = null;
+    String[] dietTags = null, healthTags = null, cuisineType = null, mealType = null, dishType = null, exclude = null;
+    Integer calorieFrom = null, calorieTo = null, prepTimeFrom = null, prepTimeTo = null;
+    JSONObject request = null;
+
 
     // Minimum settings
-    public ApiSettings(String query, String specificRecipeUrl) {
+    public ApiSettings(String query) {
         this.query = query;
-        this.specificRecipeUrl = specificRecipeUrl;
     }
 
     // Full settings
     public ApiSettings(String query, String specificRecipeUrl, int indexFrom, int indexTo, int maxIngredient, String[] dietTags, String[] healthTags, String[] cuisineType, String[] mealType, String[] dishType, int calorieFrom, int calorieTo, int prepTimeFrom, int prepTimeTo, String[] exclude) {
         this.query = query;
-        this.specificRecipeUrl = specificRecipeUrl;
         this.indexFrom = indexFrom;
         this.indexTo = indexTo;
         this.maxIngredient = maxIngredient;
@@ -51,15 +43,8 @@ public class ApiSettings {
         this.query = query;
     }
 
-    public String getSpecificRecipeUrl() {
-        return specificRecipeUrl;
-    }
 
-    public void setSpecificRecipeUrl(String specificRecipeUrl) {
-        this.specificRecipeUrl = specificRecipeUrl;
-    }
-
-    public int getIndexFrom() {
+    public Integer getIndexFrom() {
         return indexFrom;
     }
 
@@ -67,7 +52,7 @@ public class ApiSettings {
         this.indexFrom = indexFrom;
     }
 
-    public int getIndexTo() {
+    public Integer getIndexTo() {
         return indexTo;
     }
 
@@ -123,7 +108,7 @@ public class ApiSettings {
         this.dishType = dishType;
     }
 
-    public int getCalorieFrom() {
+    public Integer getCalorieFrom() {
         return calorieFrom;
     }
 
@@ -131,7 +116,7 @@ public class ApiSettings {
         this.calorieFrom = calorieFrom;
     }
 
-    public int getCalorieTo() {
+    public Integer getCalorieTo() {
         return calorieTo;
     }
 
@@ -139,7 +124,7 @@ public class ApiSettings {
         this.calorieTo = calorieTo;
     }
 
-    public int getPrepTimeFrom() {
+    public Integer getPrepTimeFrom() {
         return prepTimeFrom;
     }
 
@@ -147,7 +132,7 @@ public class ApiSettings {
         this.prepTimeFrom = prepTimeFrom;
     }
 
-    public int getPrepTimeTo() {
+    public Integer getPrepTimeTo() {
         return prepTimeTo;
     }
 
@@ -161,5 +146,91 @@ public class ApiSettings {
 
     public void setExclude(String[] exclude) {
         this.exclude = exclude;
+    }
+
+    public ApiSettings parseFilters(JSONObject request) {
+        this.request = request;
+        setIndexFrom();
+        setIndexTo();
+        setMaxIngredient();
+        setCalorieFrom();
+        setCalorieTo();
+        return this;
+    }
+
+    private void setIndexFrom() {
+        try {
+            indexFrom = request.getInt("indexFrom");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void setIndexTo() {
+        try {
+            indexTo = request.getInt("indexTo");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void setCalorieFrom() {
+        try {
+            calorieFrom = request.getInt("calorieFrom");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void setCalorieTo() {
+        try {
+            calorieTo = request.getInt("calorieTo");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void setMaxIngredient() {
+        try {
+            maxIngredient = request.getInt("maxIngredient");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void setDietTags() {
+        try {
+            maxIngredient = request.getInt("maxIngredient");
+//            dietTags = request.getJSONArray("dietTags"); // Data type change
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void setHealthTags() {
+        try {
+            maxIngredient = request.getInt("maxIngredient");
+//            healthTags = request.getJSONArray("healthTags"); // Data type change
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void setCuisineType() {
+        try {
+            maxIngredient = request.getInt("maxIngredient");
+//            cuisineType = request.getJSONArray("cuisineType"); // Data type change
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void setMealType() {
+        try {
+            maxIngredient = request.getInt("maxIngredient");
+//            mealType = request.getJSONArray("mealType"); // Data type change
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 }

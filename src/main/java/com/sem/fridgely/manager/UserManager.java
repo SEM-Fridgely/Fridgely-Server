@@ -26,7 +26,7 @@ public class UserManager extends Manager {
     }
 
     public User createUser(User user) {
-        String id = Base64.getEncoder().encodeToString(user.getEmail().getBytes());
+        String id = "u" + Integer.toString(user.getEmail().hashCode());
 
         if (getUserById(id) == null) {
             Document newDoc = new Document()
