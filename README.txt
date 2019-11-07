@@ -9,23 +9,22 @@
     
 [API] Rating:
     1. User u7890 create rating for recipe id id123
-        POST    http://localhost:8080/users
-                      {
-                        	"username":"user1",
-                        	"password":"psw2",
-                        	"email":"user3@sem.com"
-                      }
-
-         -> 200
-                {
-                    "data": {
-                        "id": "dXNlcjNAc2VtLmNvbQ==",
-                        "username": "user1",
-                        "email": "user3@sem.com"
+        POST    http://localhost:8080/ratings/user/u7890
+                    {
+                        "id":"id123",
+                        "rating":2
                     }
+         -> 200
+         {
+            "data": {
+                    "id": "id123",
+                    "userid": "u7890",
+                    "rating": 2
                 }
+          }
+      
 
-    2. Get user info
+    2. Change rating 
         PUT    http://localhost:8080/ratings/user/u7890
                     {
                         "id":"id123",
@@ -53,19 +52,21 @@
 
 [API] User:
     1. Create user
-        POST    http://localhost:8080/ratings/user/u7890
-                    {
-                        "id":"id123",
-                        "rating":2
-                    }
+      POST    http://localhost:8080/users
+                      {
+                        	"username":"user1",
+                        	"password":"psw2",
+                        	"email":"user3@sem.com"
+                      }
+
          -> 200
-         {
-            "data": {
-                    "id": "id123",
-                    "userid": "u7890",
-                    "rating": 2
-                }
-          }
+                {
+                    "data": {
+                        "id": "userid",
+                        "username": "user1",
+                        "email": "user3@sem.com"
+                    }
+                } 
     2. Get user info
         GET    http://localhost:8080/users/userid
         -> 200
@@ -79,7 +80,7 @@
         -> 404
 
     3. Update user password
-        PUT http://localhost:8080/users/dXNlcjNAc2VtLmNvbQ==
+        PUT http://localhost:8080/users/userid
          -> 200
              {
                  "data": "Update Successful"
