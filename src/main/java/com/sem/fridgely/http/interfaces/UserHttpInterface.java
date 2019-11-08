@@ -42,6 +42,24 @@ public class UserHttpInterface extends HttpInterface {
         }
     }
 
+    @POST
+    @Path("/login")
+    @Consumes({MediaType.APPLICATION_JSON})
+    @Produces({MediaType.APPLICATION_JSON})
+    public Response postUsersLogin(Object request) {
+        try {
+            JSONObject req = new JSONObject(ow.writeValueAsString(request));
+            User user = UserManager.getInstance().userLogin(req.getString("email"), req.getString("password"));
+            if (user != null) {
+                return ServiceResponse.response200(user.getInJSON());
+            } else {
+                return ServiceResponse.response200(null);
+            }
+        } catch (Exception e) {
+            throw handleException("POST users", e);
+        }
+    }
+
     @GET
     @Path("/{userId}")
     @Produces({MediaType.APPLICATION_JSON})

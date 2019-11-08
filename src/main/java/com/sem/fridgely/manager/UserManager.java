@@ -71,4 +71,11 @@ public class UserManager extends Manager {
             return null;
     }
 
+    public User userLogin(String email, String password) {
+        Document doc = userCollection.find(new Document(FIELD_EMAIL, email).append(FIELD_PASSWORD,password)).first();
+        if (doc != null)
+            return new User(doc);
+        else
+            return null;
+    }
 }
