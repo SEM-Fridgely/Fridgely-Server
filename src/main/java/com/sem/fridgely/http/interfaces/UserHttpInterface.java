@@ -52,7 +52,7 @@ public class UserHttpInterface extends HttpInterface {
         if (user != null)
             return ServiceResponse.response200(user.getInJSON());
         else
-            return Response.status(404).entity("User not found").build();
+            return ServiceResponse.response200(null);
     }
 
     @PUT
