@@ -26,7 +26,6 @@ public class RecipeAPIManager {
 
     public RecipeAPIManager(ApiSettings settings) {
         this.settings = settings;
-
 //        results  = new QueryResults();
     }
 
@@ -106,9 +105,10 @@ public class RecipeAPIManager {
             List<JSONObject> res = new ArrayList<JSONObject>();
             for (int i = 0; i < hits.length(); i++) {
                 JSONObject hit = new JSONObject(new JSONObject(hits.getString(i)).getString("recipe"));
-                String id = "rec"+ (hit.getString("uri").hashCode());
+                String id = "rec" + (hit.getString("uri").hashCode());
                 hit.put("id", id);
-                res.add(hit);
+                hit.put("rating",RatingManager.getInstance().getByRatingId(id).getAveRating());
+                res.add(new JSONObject().put("recipe",hit));
             }
             return new JSONArray(res);
         } catch (JSONException e) {
@@ -116,4 +116,5 @@ public class RecipeAPIManager {
         }
         return null;
     }
+
 }

@@ -78,9 +78,7 @@ public class UserHttpInterface extends HttpInterface {
     @Consumes({MediaType.APPLICATION_JSON})
     @Produces({MediaType.APPLICATION_JSON})
     public Response patchUsers(@Context HttpHeaders headers, Object request, @PathParam("userId") String userId) {
-
         JSONObject json = null;
-
         try {
             json = new JSONObject(ow.writeValueAsString(request));
 
@@ -91,5 +89,4 @@ public class UserHttpInterface extends HttpInterface {
         }
         return ServiceResponse.response200("Update Successful");
     }
-
 }
