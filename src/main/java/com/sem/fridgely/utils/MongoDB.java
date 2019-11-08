@@ -33,4 +33,5 @@ public class MongoDB {
     public MongoCollection<Document> getCollection(String collectionName){
         return db.getCollection(collectionName);
     }
+
 }

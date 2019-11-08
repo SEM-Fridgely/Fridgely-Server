@@ -19,7 +19,7 @@ public class UserRating {
         return this.id;
     }
 
-    public String getUserid() {
+    public String getUserId() {
         return this.userid;
     }
 
@@ -34,7 +34,7 @@ public class UserRating {
     public JSONObject getInJson() {
         try {
             JSONObject js = new JSONObject().put(RatingManager.FIELD_ID, getId())
-                    .put(RatingManager.FIELD_USERID, getUserid())
+                    .put(RatingManager.FIELD_USERID, getUserId())
                     .put(RatingManager.FIELD_RATING, getRating());
             return js;
         } catch (Exception e) {

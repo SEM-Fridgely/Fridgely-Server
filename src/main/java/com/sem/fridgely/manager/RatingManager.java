@@ -24,7 +24,7 @@ public class RatingManager extends Manager {
 
     public UserRating create(String id, String userid, Double rating) {
         this.ratingCollection.insertOne(new Document("id", id).append("userid", userid).append("rating", rating));
-        return getByUserAndRatingId(userid, id);
+        return getByUserAndRecipeId(userid, id);
     }
 
     public Rating getByRatingId(String id) {
@@ -34,8 +34,8 @@ public class RatingManager extends Manager {
         return new Rating(id, summaryStatistics);
     }
 
-    public UserRating getByUserAndRatingId(String userid, String id) {
-        Document doc = this.ratingCollection.find(new Document(FIELD_ID, id).append(FIELD_USERID, userid)).first();
+    public UserRating getByUserAndRecipeId(String userid, String recipeid) {
+        Document doc = this.ratingCollection.find(new Document(FIELD_ID, recipeid).append(FIELD_USERID, userid)).first();
         if (doc != null)
             return new UserRating(doc);
         else
@@ -43,14 +43,17 @@ public class RatingManager extends Manager {
     }
 
     public UserRating updateRating(UserRating userRating) {
-        Bson filter = and(eq(FIELD_ID, userRating.getId()), eq(FIELD_USERID, userRating.getUserid()));
+        String userid = userRating.getUserId();
+        String recipeid = userRating.getId();
+        Bson filter = and(eq(FIELD_ID, userid), eq(FIELD_USERID, userRating.getUserId()));
         Bson content = new Document("$set", new Document(FIELD_RATING, userRating.getRating()));
-        Document doc = this.ratingCollection.findOneAndUpdate(filter, content);
-        return new UserRating(doc);
+        this.ratingCollection.updateOne(filter, content);
+        return getByUserAndRecipeId(userid, recipeid);
     }
 
     public void deleteRating(String id, String userid) {
         Bson filter = and(eq(FIELD_ID, id), eq(FIELD_USERID, userid));
         Document doc = this.ratingCollection.findOneAndDelete(filter);
     }
+
 }

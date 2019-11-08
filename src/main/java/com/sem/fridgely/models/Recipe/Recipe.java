@@ -1,11 +1,16 @@
 package com.sem.fridgely.models.Recipe;
 
+import com.sem.fridgely.manager.RecipeAPIManager;
+import com.sem.fridgely.manager.ShoppingListManager;
 import com.sem.fridgely.models.Recipe.DietLabels;
 import com.sem.fridgely.models.Recipe.HealthLabels;
+import org.bson.Document;
+import org.bson.types.Binary;
 
 import java.util.ArrayList;
 
 public class Recipe {
+    String id,name,userid;
     String uri;
     String label;// Recipe title
     ArrayList<String> image;
@@ -19,6 +24,17 @@ public class Recipe {
     ArrayList<DietLabels> dietLabels;
     ArrayList<HealthLabels> healthLabels;
 
+    private Binary bItems;
+
+    public Recipe(Document doc){
+        this.id = doc.getString(RecipeAPIManager.FIELD_ID);
+        this.name = doc.getString(ShoppingListManager.FIELD_NAME);
+        this.userid = doc.getString(ShoppingListManager.FIELD_USERID);
+        try {
+            this.bItems = doc.get(ShoppingListManager.FIELD_ITEMS, org.bson.types.Binary.class);
+        } catch (Exception e) {
+        }
+    }
     public String getUri() {
         return uri;
     }
@@ -114,4 +130,5 @@ public class Recipe {
     public void setHealthLabels(ArrayList<HealthLabels> healthLabels) {
         this.healthLabels = healthLabels;
     }
+
 }

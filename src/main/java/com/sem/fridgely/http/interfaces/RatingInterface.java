@@ -34,34 +34,6 @@ public class RatingInterface extends ResourceConfig {
         }
     }
 
-    @GET
-    @Path("/{id}")
-    @Produces({MediaType.APPLICATION_JSON})
-    public Response ratingGetById(@PathParam("id") String id) {
-        try {
-            Rating rating = RatingManager.getInstance().getByRatingId(id);
-            if (rating != null) {
-                return ServiceResponse.response200(rating.getInJson());
-            } else {
-                return Response.noContent().build();
-            }
-        } catch (Exception e) {
-            return null;
-        }
-    }
-
-    @DELETE
-    @Path("/user/{userid}/{id}")
-    @Produces({MediaType.APPLICATION_JSON})
-    public Response ratingDelete(@PathParam("userid") String uid, @PathParam("id") String id) {
-        try {
-            RatingManager.getInstance().deleteRating(id, uid);
-            return Response.ok().entity("Deleted").build();
-        } catch (Exception e) {
-            return Response.status(400).entity("Failed to delete").build();
-        }
-    }
-
     @POST
     @Path("/user/{userid}")
     @Consumes({MediaType.APPLICATION_JSON})
@@ -70,31 +42,13 @@ public class RatingInterface extends ResourceConfig {
         try {
             JSONObject req = new JSONObject(ow.writeValueAsString(request));
             String id = req.getString("id");
-            UserRating userRating = RatingManager.getInstance().getByUserAndRatingId(userid, id);
-            if (userRating == null) {
-                userRating = RatingManager.getInstance().create(id, userid, req.getDouble("rating"));
-            }
-            return ServiceResponse.response200(userRating.getInJson());
-        } catch (Exception e) {
-            return Response.status(400).entity(e.toString()).build();
-        }
-    }
-
-    @PUT
-    @Path("/user/{userid}")
-    @Consumes({MediaType.APPLICATION_JSON})
-    @Produces({MediaType.APPLICATION_JSON})
-    public Response ratingUpdate(Object request, @PathParam("userid") String userid) {
-        try {
-            JSONObject req = new JSONObject(ow.writeValueAsString(request));
-            String id = req.getString("id");
             Double value = req.getDouble("rating");
-            UserRating userRating = RatingManager.getInstance().getByUserAndRatingId(userid, id);
+            UserRating userRating = RatingManager.getInstance().getByUserAndRecipeId(userid, id);
             if (userRating == null) {
-                return ServiceResponse.response200("Invalid id");
+                userRating =  RatingManager.getInstance().create(id,userid,value);
             } else {
                 userRating.setRating(value);
-                RatingManager.getInstance().updateRating(userRating);
+                userRating =  RatingManager.getInstance().updateRating(userRating);
             }
             return ServiceResponse.response200(userRating.getInJson());
         } catch (Exception e) {

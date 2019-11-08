@@ -1,9 +1,13 @@
 package com.sem.fridgely.manager;
 
 import com.sem.fridgely.models.Recipe.QueryResults;
+import com.sem.fridgely.models.Recipe.Recipe;
+import com.sem.fridgely.models.User;
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
+import org.bson.Document;
+import org.bson.conversions.Bson;
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
@@ -18,19 +22,20 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
-public class RecipeAPIManager {
+import static com.mongodb.client.model.Filters.eq;
+
+public class RecipeAPIManager extends Manager {
     ApiSettings settings;
     QueryResults results;
     WebResource webResource;
     String searchResult;
+    public static String FIELD_ID = "id", FIELD_LABEL = "label", FIELD_DETAIL = "detail";
 
     public RecipeAPIManager(ApiSettings settings) {
         this.settings = settings;
-//        results  = new QueryResults();
     }
 
     public RecipeAPIManager callAPI() {
-
         ClientResponse response = createWebClient()
                 .setQuery()
                 .setIndex()
@@ -115,6 +120,24 @@ public class RecipeAPIManager {
             e.printStackTrace();
         }
         return null;
+    }
+
+    public void insertRecipeToDB(String id, String label, JSONObject recipe){
+//        recipeCollection.get
+//                Document newDoc = new Document()
+//                        .append(FIELD_ID, id)
+//                        .append(FIELD_LABEL, label)
+//                        .append(FIELD_DETAIL, recipe.toString().getBytes());
+//                if (newDoc != null && id != null) { recepiCollection.insertOne(newDoc);
+//                }
+//            }
+//            return getUserById(id);
+//        }
+}
+    public Recipe getRecipeById(String id){
+        Bson filter = eq(FIELD_ID,id);
+        Document doc = recipeCollection.find(filter).first();
+        return new Recipe(doc);
     }
 
 }
