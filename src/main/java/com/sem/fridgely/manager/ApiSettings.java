@@ -1,10 +1,15 @@
 package com.sem.fridgely.manager;
 
+import org.apache.commons.codec.DecoderException;
+import org.apache.commons.codec.binary.Hex;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+
 public class ApiSettings {
-    public static final String API_ENDPOINT = "https://api.edamam.com/search";
+    public static final String API_ENDPOINT = "https://api.edamam.com/search?",URL_ENC="utf-8",QUERY_PREFIX = "q=";
     String query = null; // Required
     Integer indexFrom = null, indexTo = null, maxIngredient = null;
     String[] dietTags = null, healthTags = null, cuisineType = null, mealType = null, dishType = null, exclude = null;
@@ -13,27 +18,19 @@ public class ApiSettings {
 
 
     // Minimum settings
-    public ApiSettings(String query) {
-        this.query = query;
+    public ApiSettings(String q) {
+        try {
+            try {
+                this.query = new String(Hex.decodeHex(q.toCharArray()),URL_ENC) ;
+            } catch (DecoderException e) {
+                e.printStackTrace();
+            }
+        } catch (UnsupportedEncodingException e) {
+            System.out.println(q);
+            e.printStackTrace();
+        }
     }
 
-    // Full settings
-    public ApiSettings(String query, String specificRecipeUrl, int indexFrom, int indexTo, int maxIngredient, String[] dietTags, String[] healthTags, String[] cuisineType, String[] mealType, String[] dishType, int calorieFrom, int calorieTo, int prepTimeFrom, int prepTimeTo, String[] exclude) {
-        this.query = query;
-        this.indexFrom = indexFrom;
-        this.indexTo = indexTo;
-        this.maxIngredient = maxIngredient;
-        this.dietTags = dietTags;
-        this.healthTags = healthTags;
-        this.cuisineType = cuisineType;
-        this.mealType = mealType;
-        this.dishType = dishType;
-        this.calorieFrom = calorieFrom;
-        this.calorieTo = calorieTo;
-        this.prepTimeFrom = prepTimeFrom;
-        this.prepTimeTo = prepTimeTo;
-        this.exclude = exclude;
-    }
 
     public String getQuery() {
         return query;

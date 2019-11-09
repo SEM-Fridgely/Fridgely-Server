@@ -25,28 +25,28 @@ import static com.mongodb.client.model.Filters.eq;
 
 public class RecipeAPIManager extends Manager {
     public static String FIELD_ID = "_id", FIELD_LABEL = "label", FIELD_DETAIL = "detail";
+
     ApiSettings settings;
-    QueryResults results;
     WebResource webResource;
+    Client webClient;
     String searchResult;
 
     public RecipeAPIManager(ApiSettings settings) {
         this.settings = settings;
+        if ( this.webClient == null){
+            this.webClient = Client.create();
+        }
     }
 
     public RecipeAPIManager callAPI() {
+
         ClientResponse response = createWebClient()
-                .setQuery()
-                .setIndex()
-                .setCalories()
-                .setDiet()
                 .getWebResource()
                 .type(MediaType.APPLICATION_JSON_TYPE)
                 .accept(MediaType.APPLICATION_JSON_TYPE).get(ClientResponse.class);
 
         //code to check response status code.
         InputStream inputStream = response.getEntityInputStream();
-        System.out.println(inputStream.toString());
         Reader reader = new BufferedReader(new InputStreamReader(inputStream, Charset.forName(StandardCharsets.UTF_8.name())));
         try {
             this.searchResult = org.apache.commons.io.IOUtils.toString(reader);
@@ -56,46 +56,16 @@ public class RecipeAPIManager extends Manager {
         return this;
     }
 
-    public RecipeAPIManager createWebClient() {
-        Client client = Client.create();
-        this.webResource = client.resource(ApiSettings.API_ENDPOINT).queryParam("app_id", "3ef87764")
+    private RecipeAPIManager createWebClient() {
+        this.webResource = webClient.resource(getResourcePath())
+                .queryParam("app_id", "3ef87764")
                 .queryParam("app_key", "f6329aeb0ce6a806b529977877a9b5a4%20");
         return this;
     }
 
-    private RecipeAPIManager setQuery() {
-        System.out.println(settings.getQuery());
-        if (settings.getQuery() != null) {
-            this.webResource = getWebResource().queryParam("q", settings.getQuery());
-        } else {
-            this.webResource = getWebResource().queryParam("q", "test");
-        }
-        return this;
-    }
-
-    private RecipeAPIManager setIndex() {
-        if (settings.getIndexFrom() != null && settings.getIndexTo() != null) {
-            this.webResource = getWebResource().queryParam("from", settings.getIndexFrom().toString())
-                    .queryParam("to", settings.getIndexTo().toString());
-        }
-        return this;
-    }
-
-    private RecipeAPIManager setCalories() {
-        if (settings.getCalorieFrom() != null && settings.getCalorieTo() != null) {
-//          queryParam("calories", "700-800")
-            String cal = settings.getCalorieFrom().toString() + "-" + settings.getCalorieTo().toString();
-            this.webResource = getWebResource().queryParam("calories", "700-800");
-        }
-        return this;
-    }
-
-    private RecipeAPIManager setDiet() {
-        if (settings.getDietTags() != null) {
-//          queryParam("diet", "low-fat")
-            this.webResource = getWebResource().queryParam("calories", "low-fat");
-        }
-        return this;
+    private String getResourcePath() {
+        String resourcePath = ApiSettings.API_ENDPOINT + ApiSettings.QUERY_PREFIX + settings.getQuery();
+        return resourcePath;
     }
 
     private WebResource getWebResource() {
