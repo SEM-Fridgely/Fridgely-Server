@@ -2,7 +2,6 @@ package com.sem.fridgely.manager;
 
 import com.sem.fridgely.models.Recipe.QueryResults;
 import com.sem.fridgely.models.Recipe.Recipe;
-import com.sem.fridgely.models.User;
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
@@ -25,11 +24,11 @@ import java.util.List;
 import static com.mongodb.client.model.Filters.eq;
 
 public class RecipeAPIManager extends Manager {
+    public static String FIELD_ID = "_id", FIELD_LABEL = "label", FIELD_DETAIL = "detail";
     ApiSettings settings;
     QueryResults results;
     WebResource webResource;
     String searchResult;
-    public static String FIELD_ID = "id", FIELD_LABEL = "label", FIELD_DETAIL = "detail";
 
     public RecipeAPIManager(ApiSettings settings) {
         this.settings = settings;
@@ -112,8 +111,10 @@ public class RecipeAPIManager extends Manager {
                 JSONObject hit = new JSONObject(new JSONObject(hits.getString(i)).getString("recipe"));
                 String id = "rec" + (hit.getString("uri").hashCode());
                 hit.put("id", id);
-                hit.put("rating",RatingManager.getInstance().getByRatingId(id).getAveRating());
-                res.add(new JSONObject().put("recipe",hit));
+                hit.put("rating", RatingManager.getInstance().getByRatingId(id).getAveRating());
+                res.add(new JSONObject().put("recipe", hit));
+                // DB process, should process in async way
+                insertRecipeToDB(id, hit.getString("label"), hit);
             }
             return new JSONArray(res);
         } catch (JSONException e) {
@@ -122,20 +123,28 @@ public class RecipeAPIManager extends Manager {
         return null;
     }
 
-    public void insertRecipeToDB(String id, String label, JSONObject recipe){
-//        recipeCollection.get
-//                Document newDoc = new Document()
-//                        .append(FIELD_ID, id)
-//                        .append(FIELD_LABEL, label)
-//                        .append(FIELD_DETAIL, recipe.toString().getBytes());
-//                if (newDoc != null && id != null) { recepiCollection.insertOne(newDoc);
-//                }
-//            }
-//            return getUserById(id);
-//        }
-}
-    public Recipe getRecipeById(String id){
-        Bson filter = eq(FIELD_ID,id);
+    public void insertRecipeToDB(String id, String label, JSONObject recipe) {
+        Document newDoc = new Document()
+                .append(FIELD_ID, id)
+                .append(FIELD_LABEL, label)
+                .append(FIELD_DETAIL, recipe.toString().getBytes());
+
+        if (newDoc != null && id != null) {
+            Bson filter = eq(FIELD_ID, id);
+            long count = recipeCollection.countDocuments(filter);
+            if (count == 0) {
+                recipeCollection.insertOne(newDoc);
+            } else {
+
+                Bson content = new Document("$set", new Document(FIELD_LABEL, label)
+                        .append(FIELD_DETAIL, recipe.toString().getBytes()));
+                recipeCollection.findOneAndUpdate(filter, content);
+            }
+        }
+    }
+
+    public Recipe getRecipeById(String id) {
+        Bson filter = eq(FIELD_ID, id);
         Document doc = recipeCollection.find(filter).first();
         return new Recipe(doc);
     }

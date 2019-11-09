@@ -1,134 +1,36 @@
 package com.sem.fridgely.models.Recipe;
 
 import com.sem.fridgely.manager.RecipeAPIManager;
-import com.sem.fridgely.manager.ShoppingListManager;
-import com.sem.fridgely.models.Recipe.DietLabels;
-import com.sem.fridgely.models.Recipe.HealthLabels;
 import org.bson.Document;
 import org.bson.types.Binary;
-
-import java.util.ArrayList;
+import org.codehaus.jettison.json.JSONObject;
 
 public class Recipe {
-    String id,name,userid;
-    String uri;
-    String label;// Recipe title
-    ArrayList<String> image;
-    String url;
-    ArrayList<String> tags;
-    int yield;// Serving Size
-    int calories;
-    float rating;
-    int raterNum;
-    ArrayList<String> ingredients;
-    ArrayList<DietLabels> dietLabels;
-    ArrayList<HealthLabels> healthLabels;
-
+    String id, label;
     private Binary bItems;
 
-    public Recipe(Document doc){
+    public Recipe(Document doc) {
         this.id = doc.getString(RecipeAPIManager.FIELD_ID);
-        this.name = doc.getString(ShoppingListManager.FIELD_NAME);
-        this.userid = doc.getString(ShoppingListManager.FIELD_USERID);
+        this.label = doc.getString(RecipeAPIManager.FIELD_LABEL);
         try {
-            this.bItems = doc.get(ShoppingListManager.FIELD_ITEMS, org.bson.types.Binary.class);
+            this.bItems = doc.get(RecipeAPIManager.FIELD_DETAIL, org.bson.types.Binary.class);
         } catch (Exception e) {
         }
     }
-    public String getUri() {
-        return uri;
-    }
 
-    public void setUri(String uri) {
-        this.uri = uri;
+    public String getId() {
+        return id;
     }
 
     public String getLabel() {
         return label;
     }
 
-    public void setLabel(String label) {
-        this.label = label;
+    public JSONObject getInJson() {
+        try {
+            return new JSONObject(new String(bItems.getData())); // contains whole bunch of recipe object
+        } catch (Exception e) {
+            return new JSONObject();
+        }
     }
-
-    public ArrayList<String> getImage() {
-        return image;
-    }
-
-    public void setImage(ArrayList<String> image) {
-        this.image = image;
-    }
-
-    public String getUrl() {
-        return url;
-    }
-
-    public void setUrl(String url) {
-        this.url = url;
-    }
-
-    public ArrayList<String> getTags() {
-        return tags;
-    }
-
-    public void setTags(ArrayList<String> tags) {
-        this.tags = tags;
-    }
-
-    public int getYield() {
-        return yield;
-    }
-
-    public void setYield(int yield) {
-        this.yield = yield;
-    }
-
-    public int getCalories() {
-        return calories;
-    }
-
-    public void setCalories(int calories) {
-        this.calories = calories;
-    }
-
-    public float getRating() {
-        return rating;
-    }
-
-    public void setRating(float rating) {
-        this.rating = rating;
-    }
-
-    public int getRaterNum() {
-        return raterNum;
-    }
-
-    public void setRaterNum(int raterNum) {
-        this.raterNum = raterNum;
-    }
-
-    public ArrayList<String> getIngredients() {
-        return ingredients;
-    }
-
-    public void setIngredients(ArrayList<String> ingredients) {
-        this.ingredients = ingredients;
-    }
-
-    public ArrayList<DietLabels> getDietLabels() {
-        return dietLabels;
-    }
-
-    public void setDietLabels(ArrayList<DietLabels> dietLabels) {
-        this.dietLabels = dietLabels;
-    }
-
-    public ArrayList<HealthLabels> getHealthLabels() {
-        return healthLabels;
-    }
-
-    public void setHealthLabels(ArrayList<HealthLabels> healthLabels) {
-        this.healthLabels = healthLabels;
-    }
-
 }

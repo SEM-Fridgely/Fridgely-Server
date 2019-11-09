@@ -45,9 +45,10 @@ public class RatingManager extends Manager {
     public UserRating updateRating(UserRating userRating) {
         String userid = userRating.getUserId();
         String recipeid = userRating.getId();
-        Bson filter = and(eq(FIELD_ID, userid), eq(FIELD_USERID, userRating.getUserId()));
+        Bson filter = and(eq(FIELD_ID, recipeid), eq(FIELD_USERID, userid));
         Bson content = new Document("$set", new Document(FIELD_RATING, userRating.getRating()));
-        this.ratingCollection.updateOne(filter, content);
+        System.out.println(userRating.getRating());
+        this.ratingCollection.findOneAndUpdate(filter, content);
         return getByUserAndRecipeId(userid, recipeid);
     }
 
