@@ -82,6 +82,7 @@ public class RecipeAPIManager extends Manager {
                 String id = "rec" + (hit.getString("uri").hashCode());
                 hit.put("id", id);
                 hit.put("rating", RatingManager.getInstance().getByRatingId(id).getAveRating());
+                hit.put("raterNum", RatingManager.getInstance().getByRatingId(id).getCount());
                 res.add(new JSONObject().put("recipe", hit));
                 // DB process, should process in async way
                 insertRecipeToDB(id, hit.getString("label"), hit);

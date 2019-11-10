@@ -16,7 +16,6 @@ public class ApiSettings {
     Integer calorieFrom = null, calorieTo = null, prepTimeFrom = null, prepTimeTo = null;
     JSONObject request = null;
 
-
     // Minimum settings
     public ApiSettings(String q) {
         try {
@@ -30,7 +29,6 @@ public class ApiSettings {
             e.printStackTrace();
         }
     }
-
 
     public String getQuery() {
         return query;
